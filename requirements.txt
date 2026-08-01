@@ -1,0 +1,3 @@
+# TextFlow - Zero External Dependencies
+# Requires python 3.8 +
+# Uses only python standard library - math
