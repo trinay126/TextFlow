@@ -39,4 +39,20 @@ def build_stage(name, func, **config):
     """
     return (name, func, config)
 
-def log summary
+def log_summary(log):
+    """
+    Return a summary dict from the pipeline run log
+    """
+    if not log:
+        return{}
+
+    total_removed = sum(entry["removed"] for entry in log)
+    stages_run = len(log)
+
+    return{
+        "stages_run" : stages_run,
+        "chars_before" : log[0]["before"],
+        "chars_after"  : log[-1]["after"],
+        "chars_removed": total_removed,
+        "pct_reduced"  : round(total_removed / max(1, log[0]["before"]) * 100, 1)
+    }
