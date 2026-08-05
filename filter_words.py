@@ -70,4 +70,6 @@ def deduplicate_sentences(text, **kwargs):
 
 def remove_single_chars(text, **kwargs):
     """Remove lone single characters (not letters like 'I' ir 'a)"""
-    
+    words = text.split()
+    kept = [w for w in words if len(w) > 1 or w.lower() in ("i", "a")]
+    return " ".join(kept)
