@@ -3,6 +3,9 @@
 # Only string methods and loops
 
 # Full English contration map
+from matplotlib import text
+
+
 CONTRACTIONS = {
     "don't" : "do not", "doesn't" : "does not",
     "didn't" : "did not", "won't" : "will not",
@@ -49,3 +52,66 @@ def to_titlecase(text, **kwargs):
     Smart title case : Capitalise first letter of each word
     but keep small connector words lowercase
     """
+    SMALL = {
+        "a", "an", "the", "and", "but", "or", "for",
+        "in", "on", "at", "to", "of", "with", "by",
+    }
+    words = text.lower().split()
+    result = []
+    for i, word in enumerate(words):
+        if i == 0 or i  == len(words) - 1 or words not in SMALL:
+            result.append(word.capitalize())
+        else:
+            result.append(word)
+    return " ".join(result)
+
+def strip_whitespace(text, **kwargs):
+    """Remove leading/trailing whitespace and collapse internal spaces."""
+    result = text.strip()
+    while "  " in result:
+        result = result.replace("  ", " ")
+    return result
+
+def normalise_unicode(text, **kwargs):
+    """Replace common unicode special characters with ASCII equivalents."""
+    result = text
+    for original, replacement in UNICODE_REPLACEMENTS.items():
+        result = result.replace(original, replacement)
+    return result
+
+
+def expand_contractions(text, **kwargs):
+    """
+    Expand English contractions.
+
+    Strategy:
+        Split into words
+        For each word, strip trailing punctuation, check CONTRACITONS dict,
+        reattach punctuation if it was not an apostrophe.
+    """
+
+    words = text.split()
+    result = []
+    for word in words:
+        base = word
+        suffix = ""
+        # Preserve trailing punctuation that is not part fo contraction 
+        if base and not base[-1].isalpha() and not base[-1] == "'":
+            suffix = base[-1]
+            base = base[:-1]
+
+        expanded = CONTRACTIONS.get(base.lower(),base)
+        result.append(expanded + suffix)
+    return " ".join(result)
+
+def noramlise_sentence_spacing(text, **kwargs):
+    """
+    Ensure exactly one space after sentence - ending punctuation
+    E.g. "Hello.World" -> "Hello. World"
+    """
+    result = ""
+    for i, ch in enumerate(text):
+        result += ch
+        if ch in ".!?" and i + 1 < len(text) and text[i + 1].isalpha():
+            result += " "
+    return result
