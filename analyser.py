@@ -79,3 +79,76 @@ def flesch_reading_ease(text):
     score = (
         206.835
     )
+    return round(max(0.0, min(100.0, score)))
+
+def reading_level(score):
+    """Return a reading level label from a Flesch score"""
+    if score >= 90: return "Very Easy (5th grade)"
+    if score >= 80: return "Easy (6th grade)"
+    if score >= 70: return "Fairly Easy (7th grade)"
+    if score >= 60: return "Standard (8th-9th grade)"
+    if score >= 50: return "Fairly Difficult (10th-12th grade)"
+    if score >= 30: return "Difficult (college level)"
+    return "Very Difficult (professional)"
+
+# -- Keyword Density ------------------------------------------
+def keyword_density(text, top_n=10, exclude_stops=True):
+    """
+    Compute keyword frequency and density (% of total words).
+
+    Args :
+        text    : input string
+        top_n   : number of top keywords to return
+        exclude_stops : if True, skip common stopwords
+
+    Returns :
+        list of (word, count density_pct) tuples
+    """
+    STOPS = {
+        "the","a","an","and","or","but","in","on","at","to",
+        "for","of","with","by","is","are","was","were","be",
+        "have","has","had","do","does","did","this","that",
+        "i","you","he","she","it","we","they","not","so",
+    }
+
+    words = text.lower().split()
+    total = len(words)
+    freq = {}
+
+    for word in words:
+        clean = word.strip(".,!?;:\"'()-")
+        if not clean:
+            continue
+        if exclude_stops and clean in STOPS:
+            continue
+        if len(clean) < 2:
+            continue
+        freq[clean] = freq.get(clean, 0) + 1
+    sorted_freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
+
+    result = []
+    for word, count in sorted_freq[:top_n]:
+        density = round(count / max (1, total) * 100, 2)
+        result.append((word, count, density))
+    return result
+
+# ── Sentiment ─────────────────────────────────────────────────────────────────
+POSITIVE_WORDS = {
+    "good","great","excellent","amazing","wonderful","fantastic","superb",
+    "outstanding","perfect","love","best","awesome","brilliant","happy",
+    "positive","helpful","easy","fast","smooth","reliable","clear",
+    "effective","efficient","beautiful","impressive","powerful","simple",
+    "clean","quick","strong","success","successful","improve","improved",
+    "better","win","winning","enjoy","enjoyed","recommend","recommended",
+    "innovative","smart","intelligent","creative","useful","valuable",
+}
+
+NEGATIVE_WORDS = {
+    "bad","terrible","awful","worst","horrible","poor","disappointing",
+    "slow","broken","useless","hate","difficult","hard","confusing",
+    "error","bug","fail","failed","failure","problem","issue","crash",
+    "annoying","frustrating","complex","complicated","ugly","weak",
+    "missing","wrong","incorrect","false","negative","loss","losing",
+    "waste","wasted","boring","dull","expensive","overpriced","defective",
+}
+NEGATION_WORDS = {"not", "no", "never", "barely", "hardly", "scarcely", "without"}
