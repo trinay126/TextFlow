@@ -57,3 +57,25 @@ def count_syllables(word):
     return max(1, count)
 
 def flesch_reading_ease(text):
+    """
+    Compute Flesch Reading Ease score(0 - 100)
+
+    Formula :
+        206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words)
+
+    Score guide :
+        90 - 100 : very easy (5th grade)
+        70 - 80  : Easy(6th grade)
+        60 - 70  : Standard (7th grade)
+        50 - 60  : Fairly difficult
+        30 - 50  : Difficult
+        0 - 30   : Very difficult
+    """
+    words = text.split()
+    sentences = max(1, sum(1 for ch in text if ch in ".!?"))
+    syllables = sum(count_syllables(w) for w in words)
+    n_words = max(1, len(words))
+
+    score = (
+        206.835
+    )
