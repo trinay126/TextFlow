@@ -152,3 +152,81 @@ NEGATIVE_WORDS = {
     "waste","wasted","boring","dull","expensive","overpriced","defective",
 }
 NEGATION_WORDS = {"not", "no", "never", "barely", "hardly", "scarcely", "without"}
+
+def analyse_sentiment(text):
+    """
+    Rule based sentiment analysis
+
+    strategy:
+        1. Count postivie and negative words
+        2. check for negotion words before each sentiment word.
+            if negated positive -> flip to negative (and vice versa).
+        3. Score = (pos - neg) / (pos + neg)
+            Range: -1.0 (very negative) to +1.0 (very positive)
+    """
+    words = text.lower().split()
+    pos_count = 0
+    neg_count = 0
+    pos_found = []
+    neg_found = []
+
+    for i, word in enumerate(words):
+        clean = word.strip(".,!?;:\"'")
+        is_neg = (i > 0 and word[i - 1].strip(".,!?;:") in NEGATIVE_WORDS)
+        in_pos = clean in POSITIVE_WORDS
+        in_neg = clean in NEGATION_WORDS
+
+        if in_pos and not is_neg:
+            pos_count += 1
+            pos_found.append(clean)
+        elif in_pos and is_neg:
+            neg_count += 1
+
+        if in_neg and not is_neg:
+            neg_count += 1
+            neg_found.append(clean)
+        elif in_neg and is_neg:
+            pos_count += 1
+
+    total = pos_count + neg_count
+    if total == 0:
+        score = 0.0
+    else:
+        score = round((pos_count - neg_count) / total, 4)
+
+    label = (
+        "strongly Positive" if score > 0.6 else
+        "Positive" if score > 0.2 else
+        "slightly Positive" if score > 0.0 else
+        "Neutral" if score == 0.0 else
+        "slightly Negative" if score > -0.2 else
+        "Negative" if score > -0.6 else
+        "Strongly Negative"
+    )
+
+    return {
+        "score"          : score,
+        "label"          : label,
+        "positive_count" : pos_count,
+        "Negative_count" : neg_count,
+        "postive_words"  : pos_found[:5],
+        "negative_words" : neg_found[:5],
+    }
+
+# -- Full Analysis ----------------------------------------------
+def analyse_text(original_text, processed_text):
+    """
+    Run all analytics on original and processed text.
+    Returns a single dict with all metrics.
+    """
+    fre_score = flesch_reading_ease(original_text)
+    return{
+        "original_stats"  : word_stats(original_text),
+        "processed_stats" : word_stats(processed_text),
+        "readability"     : {
+            "score" : fre_score,
+            "level" : reading_level(fre_score)
+        },
+        "keywords"        : keyword_density(processed_text, top_n=10),
+        "sentiment"       : analyse_sentiment(original_text),
+    }
