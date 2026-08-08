@@ -54,3 +54,62 @@ def format_word_stats(label, stats):
     lines.append(f"  Shortest word   : {stats.get('shortest', '')}")
     return lines
 
+def format_readability(readability):
+    """Format readability section"""
+    lines = section_header("READABILITY (Flesch Reading Ease)")
+    score = readability.get("score", 0)
+    level = readability.get("level", "")
+
+    #visual score bar
+    filled = int(score / 100 * 30)
+    bar =  "█" * filled + "░" * (30 - filled)
+    lines.append(f" Score  : {score} ? 100") 
+    lines.append(f" Level  : {level}")
+    lines.append(f" [{bar}]")
+    lines.append("")
+    lines.append(" Score Guide")
+    lines.append(" 90 - 100 Very Easy (5th grade)")
+    lines.append(" 70 - 80 Easy (6th - 7th grade)")
+    lines.append(" 60 - 70 Standard (8th - 9th grade)")
+    lines.append(" 50 - 60 Fairly Difficult") 
+    lines.append(" 30 - 50 Difficult (college level)")
+    lines.append(" 0 - 30  Very Difficult")
+    return lines
+
+def format_keywords(keywords):
+    """Format keyword density table."""
+    lines = section_header("KEYWORD DENSITY (Top 10)")
+    if not keywords:
+        lines.append(" NO keywords found ") 
+        return lines
+
+    max_count = keywords[0][1] if keywords else 1
+    lines.append(f" {'Keyword':<20} {'Count':>6} {'Density':>8} chart")
+    lines.append(f" {divider('-')}")
+
+    for word, count, density in keywords:
+        filled = int(count / max_count * 15)
+        bar = "█" * filled + "░" * (15 - filled)
+        lines.append(
+            f" {word:<20} {count:>6} {density:>7}% {bar}"
+        )  
+        return lines
+
+def format_sentiment(sentiment):
+    """Format sentiment analysis section"""
+    lines = section_header("SENTIMENT ANALYSIS (Rule-based)")
+    score = sentiment.get("score", 0)
+    label = sentiment.get("label", "Neutral")
+    pos_c = sentiment.get("positive_count", 0)
+    neg_c = sentiment.get("negative_count", 0)
+
+    #score bar : negative side (left) and positive side (right)
+    mid = 15
+    filled = int(abs(score) * mid)
+    if score >= 0:
+        bar = "░" * mid + "█" * filled + "░" * (mid - filled)
+    else:
+        bar = "░" * (mid - filled) + "█" * filled + "░" * mid
+
+    lines.append(f" Score  : {score:>7} (rnage -1.0 to +1.0)")
+    
