@@ -112,4 +112,37 @@ def format_sentiment(sentiment):
         bar = "░" * (mid - filled) + "█" * filled + "░" * mid
 
     lines.append(f" Score  : {score:>7} (rnage -1.0 to +1.0)")
-    
+    lines.append(f" Label  : {label}")
+    lines.append(f" [{bar}]")
+    lines.append(f" Negative <──────────────────────> Positive ")
+    lines.append(f"\n Positive signals : {pos_c} words")
+    lines.append(f" Negative signals : {neg_c} words")
+    if sentiment.get("postive_words"):
+        lines.append(f" Top positive : {sentiment['postive_words']}")
+    if sentiment.get("negative_words"):
+        lines.append(f" Top negative : {sentiment['negative_words']}")
+    return lines
+
+def format_text_preview(label, text, max_chars=200):
+    """Show a truncated preview of text"""
+    lines = section_header(f"TEXT PREVIEW ({label})")
+    preview = text[:max_chars]
+    if len(text) > max_chars:
+        preview += "..."
+    lines.append(f" {preview}")
+    return lines
+
+def build_report(pipeline_name, log, summary, analytics, original_text, processed_text):
+    """
+    Assemble the complete TextFlow report as a single string.
+    """
+    lines = header_box(pipeline_name, summary)
+    lines.extend(format_pipeline_log(log))
+    lines.extend(format_text_preview("Original", original_text))
+    lines.extend(format_text_preview("Processed", processed_text))
+    lines.extend(format_word_stats("Original", analytics["original_stats"]))
+    lines.extend(format_word_stats("Processed", analytics["processed_stats"]))
+    lines.extend(format_readability(analytics["readability"]))
+    lines.extend(format_keywords(analytics["keywords"]))
+    lines.extend(format_sentiment(analytics["sentiment"]))
+    return "\n".join(lines)
