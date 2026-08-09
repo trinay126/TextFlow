@@ -35,6 +35,12 @@ def remove_stopwords(text, lang="en", custom_stops=None, **kwargs):
     kept = [w for w in words if w.lover().strip(".,!?;:") not in stops]
     return " ".join(kept)
 
+def filter_short_words(text, min_length=2, **kwargs):
+    """Remove words shorter than min_length characters."""
+    words = text.split()
+    kept  = [w for w in words if len(w.strip(".,!?;:")) >= min_length]
+    return " ".join(kept)
+
 def filter_long_words(text, max_length, **kwargs):
     """Remove words longer than max_length (e.g. garbled takens)."""
     words = text.split()
