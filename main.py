@@ -49,3 +49,70 @@ LIGHT_PIPELINE = [
     build_stage("to_lowercase",      to_lowercase),
     build_stage("strip_whitespace",  strip_whitespace),
 ]
+
+KEYWORD_PIPELINE = [
+    build_stage("normalise_unicode", normalise_unicode),
+    build_stage("remove_urls",       remove_urls),
+    build_stage("remove_html",       remove_html_tags),
+    build_stage("to_lowercase",      to_lowercase),
+    build_stage("remove_punctuation",remove_punctuation, keep=""),
+    build_stage("remove_stopwords",  remove_stopwords,   lang="en"),
+    build_stage("filter_short",      filter_short_words, min_length=4),
+    build_stage("strip_whitespace",  strip_whitespace),
+]
+AVAILABLE_PIPELINES = {
+    "standard" : STANDARD_PIPELINE,
+    "light": LIGHT_PIPELINE,
+    "keyword"  : KEYWORD_PIPELINE,
+}
+
+def run_textflow(
+        text    = SAMPLE_TEXT,
+        pipeline_name = "standard",
+):
+    """
+    Full TextFlow pipeline.
+
+    steps :
+        1. select pipeline stages
+        2. Run each stage on te text in order
+        3. Run analytics on original and processed text
+        4. uild and print the report
+    """
+
+    print(f"\nTextFlow | pipeline: '{pipeline_name}")
+    print("-" * 50)
+
+    #step 1 - select stages
+    stages =  AVAILABLE_PIPELINES.get(pipeline_name, STANDARD_PIPELINE)
+    print(f" Stages : {len(stages)}")
+    for name, _, config in stages:
+        cfg_str =  f" config+{config}" if config else ""
+        print(f"  → {name}{cfg_str} ")
+
+    #step 2 - Run pipeline
+    processed_text, log =  run_pipeline(text, stages)
+    summary = log_summary
+
+    #step 3 - Build and print report
+    report =  build_report(
+        pipeline_name = pipeline_name,
+        log   = log,
+        summary = summary,
+        analytics = analytics,
+        original_text = text,
+        processed_text = processed_text,
+        )
+    print(report)
+    return processed_text, analytics, report
+
+if __name__ == "__main__":
+    # Run with the standard piepline
+    run_textflow(
+        text = SAMPLE_TEXT,
+        pipeline_name = "stanard",
+    )
+
+    # Uncomment to try other pipelines:
+    # run_textflow(pipeline_name = "light")
+    # run_texflow(pipeline_name = "keyword")
