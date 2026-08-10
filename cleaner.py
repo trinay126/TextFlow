@@ -36,9 +36,9 @@ def remove_html_tags(text, **kwargs):
         elif not in_tag:
             result += ch
 
-    # Collapse multiple spaces left behind by removed tags
-    while " " in result:
-        result = result.replace(" ", " ")
+    while "  " in result:
+        result = result.replace("  ", " ")
+
     return result.strip()
 
 def remove_punctuation(text, keep="", **kwargs):
@@ -70,7 +70,7 @@ def remove_extra_spaces(text, **kwargs):
     """Collapse multiple consecutive spaces into one"""
     result = text.strip()
     while " " in result:
-        result = result.replace(" ", " ")
+        result = result.replace("  ", " ")
     return result
 
 def deduplicate_lines(text, **kwargs):

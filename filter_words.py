@@ -32,7 +32,7 @@ def remove_stopwords(text, lang="en", custom_stops=None, **kwargs):
         stops.update(set(w.lower() for w in custom_stops))
 
     words = text.split()
-    kept = [w for w in words if w.lover().strip(".,!?;:") not in stops]
+    kept = [w for w in words if w.lower().strip(".,!?;:") not in stops]
     return " ".join(kept)
 
 def filter_short_words(text, min_length=2, **kwargs):

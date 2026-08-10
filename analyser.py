@@ -172,7 +172,7 @@ def analyse_sentiment(text):
 
     for i, word in enumerate(words):
         clean = word.strip(".,!?;:\"'")
-        is_neg = (i > 0 and word[i - 1].strip(".,!?;:") in NEGATIVE_WORDS)
+        is_neg = (i > 0 and words[i - 1].strip(".,!?;:") in NEGATIVE_WORDS)
         in_pos = clean in POSITIVE_WORDS
         in_neg = clean in NEGATION_WORDS
 

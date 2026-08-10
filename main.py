@@ -80,7 +80,7 @@ def run_textflow(
         4. uild and print the report
     """
 
-    print(f"\nTextFlow | pipeline: '{pipeline_name}")
+    print(f"\nTextFlow | pipeline: '{pipeline_name}' ")
     print("-" * 50)
 
     #step 1 - select stages
@@ -91,10 +91,13 @@ def run_textflow(
         print(f"  → {name}{cfg_str} ")
 
     #step 2 - Run pipeline
-    processed_text, log =  run_pipeline(text, stages)
-    summary = log_summary
+    processed_text, log = run_pipeline(text, stages)
+    summary = log_summary(log)
 
-    #step 3 - Build and print report
+    #step 3 - Analytics
+    analytics = analyse_text(text, processed_text)
+
+    #step 4 - Build and print report
     report =  build_report(
         pipeline_name = pipeline_name,
         log   = log,
@@ -110,9 +113,9 @@ if __name__ == "__main__":
     # Run with the standard piepline
     run_textflow(
         text = SAMPLE_TEXT,
-        pipeline_name = "stanard",
+        pipeline_name = "standard",
     )
 
     # Uncomment to try other pipelines:
-    # run_textflow(pipeline_name = "light")
-    # run_texflow(pipeline_name = "keyword")
+run_textflow(pipeline_name = "light")
+run_textflow(pipeline_name = "keyword")

@@ -17,6 +17,7 @@ def run_pipeline(text, stages):
     log = []
 
     for stage_name, stage_func, config in stages:
+        print(f"Running stage: {stage_name}")
         before = len(current)
         current = stage_func(current, **config)
         after = len(current)
