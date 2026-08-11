@@ -34,10 +34,10 @@ The project demonstrates how a text-processing pipeline can be designed using Py
 
 TextFlow follows a modular pipeline architecture:
 
-    Raw Text
-        ↓
-    Pipeline Configuration
-        ↓
+                  Raw Text
+                     ↓
+          Pipeline Configuration
+                     ↓
     ┌─────────────────────────────────┐
     │         Processing Stages       │
     │                                 │
@@ -81,6 +81,8 @@ TextFlow follows a modular pipeline architecture:
     ├── analyser.py
     ├── reporter.py
     ├── requirements.txt
+    ├── output.txt
+    ├── README.md
     └── .gitignore
 
 ### Module Responsibilities
@@ -400,44 +402,6 @@ The core processing mechanics are implemented using Python's standard library.
 
 ---
 
-## 🔮 Future Improvements
-
-Possible future extensions include:
-
-- REST API using FastAPI
-- File upload support
-- Batch document processing
-- Persistent analytics storage
-- Additional language support
-- Advanced NLP models
-- Database integration
-- Web interface
-- Automated test suite
-- Performance benchmarking
-- Async processing for large workloads
-
----
-
-## 🎤 Interview Talking Points
-
-### Why did you build TextFlow?
-
-> I wanted to understand how text-processing pipelines work internally rather than simply calling an NLP library. I designed each transformation as an independent stage and created a pipeline executor to run those stages sequentially.
-
-### Why use a pipeline architecture?
-
-> It separates individual transformations from execution logic, making the system easier to extend, debug and reorder.
-
-### Why didn't you use NLTK or spaCy?
-
-> The goal of this project was to demonstrate Python fundamentals and understand the mechanics behind common text-processing operations. External NLP libraries could be introduced later when more sophisticated linguistic processing is required.
-
-### How would you scale this?
-
-> I would first expose the pipeline through a FastAPI service, then add batch processing, persistence, asynchronous execution and eventually distributed processing for large workloads.
-
----
-
 ## 📌 Current Scope
 
     Python Fundamentals
@@ -458,7 +422,7 @@ TextFlow is intentionally a fundamentals-focused text-processing project rather 
 
 ## 👨‍💻 Author
 
-**Your Name**
+**Chadalavada Trinay Sai**
 
 Computer Science Student  
 Python | Backend Development | AI Engineering
